@@ -1,0 +1,229 @@
+{% extends "blog/base.html" %} {% load static %} {% block body %}
+<section class="slick-slideshow">
+  <div class="slick-custom">
+    <img
+      src="{% static 'images/slideshow/medium-shot-business-women-high-five.jpg' %}"
+      class="img-fluid"
+      alt=""
+    />
+
+    <div class="slick-bottom">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 col-10">
+            <h1 class="slick-title">Dev Skills</h1>
+
+            <p class="lead text-white mt-lg-3 mb-lg-5">
+             {% lorem 20 w random %}
+            </p>
+
+            <a href="about.html" class="btn custom-btn">Learn more about us</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slick-custom">
+    <img
+      src="{% static 'images/slideshow/team-meeting-renewable-energy-project.jpg' %}"
+      class="img-fluid"
+      alt=""
+    />
+
+    <div class="slick-bottom">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 col-10">
+            <h1 class="slick-title">Courses</h1>
+
+            <p class="lead text-white mt-lg-3 mb-lg-5">
+              {% lorem 20 w random %}
+            </p>
+
+            <a href="product.html" class="btn custom-btn">Explore Blogs</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slick-custom">
+    <img
+      src="{% static 'images/slideshow/two-business-partners-working-together-office-computer.jpg' %}"
+      class="img-fluid"
+      alt=""
+    />
+
+    <div class="slick-bottom">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 col-10">
+            <h1 class="slick-title">Talk to us</h1>
+
+            <p class="lead text-white mt-lg-3 mb-lg-5">
+              {% lorem 20 w random %}
+            </p>
+
+            <a href="contact.html" class="btn custom-btn">Work with us</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="about section-padding">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h2 class="mb-5">Dev Skill Blog</h2>
+      </div>
+      <div class="container my-5">
+        <div class="row">
+          {% for post in posts %}
+          <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 shadow-sm">
+              <!-- Blog Image -->
+              
+              <img
+                src="{{ post.image.url }}"
+                class="card-img-top img-fluid"
+                alt="{{ post.title }}"
+                style="height: 200px; object-fit: cover"
+              />
+              <!-- Blog Details -->
+              <div class="card-body d-flex flex-column">
+                <!-- Blog Title -->
+                <a href="#">
+                  <h5 class="card-title text-truncate">{{ post.title }}</h5>
+                </a>
+                <!-- Blog Content (Snippet) -->
+                <p class="card-text text-muted">
+                  {{ post.content|truncatewords:20 }}
+                </p>
+                <p class="card-text text-muted">
+                  {{ post.author|truncatewords:20 }}
+                </p>
+                <!-- Read More Button -->
+                <a
+                  href="#"
+                  class="btn btn-primary mt-auto"
+                >
+                  Read More
+                </a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="featured-product section-padding">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h2 class="mb-5">Recent Blog</h2>
+      </div>
+
+      {% for recent in recents%}
+      <div class="col-lg-4 col-12 mb-3">
+        <div class="product-thumb">
+          <a href="#">
+            <img
+              src="{{ recent.image.url }}"
+              class="img-fluid product-image"
+              alt="{{ recent.title }}"
+            />
+          </a>
+
+          <div class="product-top d-flex">
+            <span class="product-alert me-auto">{{recent.author}}</span>
+
+            <a href="#" class="bi-heart-fill product-icon"></a>
+          </div>
+
+          <div class="product-info d-flex">
+            <div>
+              <h5 class="product-title mb-0">
+                <a
+                  href="#"
+                  class="product-title-link text-truncate"
+                  style="width: 150px; white-space: nowrap; overflow: hidden"
+                  >{{recent.title}}</a
+                >
+              </h5>
+              <p
+                class="product-p text-truncate"
+                style="width: 250px; white-space: nowrap; overflow: hidden"
+              >
+                {{recent.content}}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+      <div class="col-12 text-center">
+        <a href="#" class="view-all">View All Blogs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="featured-product section-padding">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h2 class="mb-5">Trending Blog</h2>
+      </div>
+
+      {% for trending in trendings %}
+      <div class="col-lg-4 col-12 mb-3">
+        <div class="product-thumb">
+          <a href="#">
+            <img
+              src="{{ trending.image.url }}"
+              class="img-fluid product-image"
+              alt="{{ trending.title }}"
+            />
+          </a>
+
+          <div class="product-top d-flex">
+            <span class="product-alert me-auto">{{trending.author}}</span>
+
+            <a href="#" class="bi-heart-fill product-icon"></a>
+          </div>
+
+          <div class="product-info d-flex">
+            <div>
+              <h5 class="product-title mb-0">
+                <a
+                  href="#"
+                  class="product-title-link text-truncate"
+                  style="width: 150px; white-space: nowrap; overflow: hidden"
+                  >{{trending.title}}</a
+                >
+              </h5>
+              <p
+                class="product-p text-truncate"
+                style="width: 250px; white-space: nowrap; overflow: hidden"
+              >
+                {{trending.content}}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+      
+    </div>
+  </div>
+</section>
+
+{% endblock body %}

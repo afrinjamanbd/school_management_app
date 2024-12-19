@@ -1,0 +1,86 @@
+{% extends "base.html" %} 
+{% load static %}
+
+{% block body %}
+<div class="col-12">
+  <div class="container my-5">
+    <div class="row">
+      <div class="col-md-12 col-sm-12 mb-12">
+        <div class="card h-100 shadow-sm">
+          <!-- Blog Image -->
+          
+          <img
+            src="{{ post.image.url }}"
+            class="card-img-top img-fluid"
+            alt="{{ post.title }}"
+            style="object-fit: cover"
+          />
+          <!-- Blog Details -->
+          <div class="card-body d-flex flex-column">
+            <!-- Blog Title -->
+            <a href="{% url 'blog_detail' post.blog_slug %}">
+              <h5 class="card-title">{{ post.title }}</h5>
+            </a>
+            <p> {{ post.content }}</p>
+            <!-- Blog Content (Snippet) -->
+            <p class="card-text text-muted">
+              {{ post.content|truncatewords:20 }}
+            </p>
+            <p class="card-text text-muted">
+              {{ post.author|truncatewords:20 }}
+            </p>
+           
+            
+              Read More
+            </a>
+          </div>
+        </div>
+      </div>
+     
+     
+    <h3 class="mt-4"> All Comment on this Post </h3>
+    <div class="col-lg-6 col-12">
+      {% for comment in comments %}
+        <h4> {{comment.name}} </h4>
+        <p> {{comment.date}} </p>
+        <p> {{comment.comment}} </p>
+      {% endfor %}
+
+    </div>
+    
+    </div>
+    <div class="col-lg-6 col-12">
+      <h2 class="mb-4">Put Your <span>comment</span></h2>
+
+      <form class="contact-form me-lg-5 pe-lg-3" role="form" method="POST" action="{% url "add_comment" post.blog_slug %}">
+       {% csrf_token %}
+        <div class="form-floating mb-4">
+          <textarea id="message" name="InputComment" class="form-control" placeholder="Leave a comment here" required style="height: 160px"></textarea>
+
+          <label for="message">Tell us about the project</label>
+        </div>
+        <div class="form-floating my-4">
+          <input type="email" name="InputEmail" id="email" pattern="[^ @]*@[^ @]*" class="form-control" placeholder="Email address" required>
+
+          <label for="email">Email address</label>
+      </div>
+
+          <div class="form-floating">
+              <input type="text" name="InputWeb" id="name" class="form-control" placeholder="Web URL" required>
+
+              <label for="name">Web URL</label>
+          </div>
+          
+          <div class="form-floating my-4">
+              <input type="text" name="InputName" id="subject"class="form-control" placeholder="Name" required>
+              <label for="subject">Name</label>
+          </div>
+
+          <div class="col-lg-5 col-6">
+              <button type="submit" class="form-control">Send</button>
+          </div>
+      </form>
+  </div>
+  </div>
+</div>
+{% endblock body%}

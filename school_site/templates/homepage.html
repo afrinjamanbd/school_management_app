@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+    <body>
+        <h1> Welcome To Our Site : {{user_name}}</h1>
+        <p> Here Goes the Subject </p>
+        {% for value in subjects %}
+            <li>{{value}}</li>
+        {% endfor %}
+        {% if regestration_open%}
+        <p> Admission Open</p>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <label for="fname">First name:</label><br>
+            <input type="text" id="fname" name="fname"><br>
+            <label for="lname">Last name:</label><br>
+            <input type="text" id="lname" name="lname"><br>
+            <label for="email">Email:</label><br>
+            <input type="text" id="email" name="email"><br>
+            <button type="submit" id="form_submit" value="form1">Submit</button>
+        </form>
+
+        <form method="post">
+            {% csrf_token %}
+            <label for="is_interested">Are you Interested:</label><br>
+            <input type="text" id="is_interested" name="is_interested"><br>
+            <button type="submit" id="form_submit2" value="form2">Submit Your Interest</button>
+        </form>
+          {% if email %}
+          <p> We recieved Your email {{email}}</p>
+          {% endif %}
+    </body>
+{% endblock %}
+
