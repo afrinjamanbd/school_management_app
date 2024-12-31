@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from .models import Teacher
+from .models import Teacher, Student
 
 
 # Create your views here.
@@ -25,6 +25,11 @@ def show_teacher_info(request):
             return JsonResponse({'status': "Failed", "message": str(e)})
     return JsonResponse({'status': "Success", "message": "No data for get request"})
 
+
+def create_student(request):
+    student = Student()
+    student.save()
+    return JsonResponse("student created!")
 
 
 
