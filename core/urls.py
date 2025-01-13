@@ -17,11 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from student_app import views
+from student_app import views, urls as student_app_url
 from school_site import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('add-techer/', views.show_teacher_info, name='show_teacher_info'),
-    path('school/', include(urls))
+    path('school/', include(urls)),
+    path('', include(student_app_url)),
 ]

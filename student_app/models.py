@@ -4,7 +4,7 @@ from django.db import models
 class Teacher(models.Model):
     name = models.CharField(max_length=100)
     age = models.PositiveIntegerField(null=True)
-    salary = models.FloatField(null=False, blank=False, default=15000)
+    salary = models.FloatField(null=False, blank=True, default=15000)
     email = models.EmailField(primary_key = True, max_length=150)
     joining_date = models.DateField(null=False)
     educational_background = models.JSONField(default=dict, blank=True)
@@ -16,8 +16,8 @@ class Teacher(models.Model):
 class ClassNSection(models.Model):
     standard = models.PositiveIntegerField(null=True) 
     guide_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    total_student = models.PositiveIntegerField(null=False, blank=False, default=50)
-    room_name =  models.CharField(max_length=50)
+    total_student = models.PositiveIntegerField(null=False, blank=True, default=50)
+    room_name =  models.CharField(max_length=50, unique=True)
     section = models.CharField(max_length=2, default='A')
     is_active = models.BooleanField(default=True)
 
