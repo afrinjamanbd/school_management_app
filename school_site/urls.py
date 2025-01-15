@@ -3,7 +3,8 @@ from school_site import views
 
 urlpatterns = [
     path('homepage/', views.home, name='hompage'),
-    path('about/', views.about, name='about')
+    path('about/', views.about, name='about'),
+    path('facilities/', views.facilities, name='facilities')    
 ]
 
 
