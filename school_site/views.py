@@ -21,3 +21,6 @@ def helper_method(pram, Param1: str = 'abcd'):
 
 def about(request):
     return render(request, 'about.html')
+
+def facilities(request):
+    return render(request, 'facilities.html')
