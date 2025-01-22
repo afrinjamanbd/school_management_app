@@ -13,31 +13,56 @@ def home(request):
 def about(request):
     return JsonResponse({'status': "Success"})
 
+# def create_teacher_info(request):
+#     if request.method == 'POST':
+#         name = request.POST.get('name')
+#         age = request.POST.get('age')
+#         email = request.POST.get('email')
+#         salary = request.POST.get('salary')
+#         joining_date = request.POST.get('joining_date')
+
+#         if all(name, age, email, salary, joining_date):
+#             try:
+#                 Teacher.objects.create(name = name,
+#                                         age = age,
+#                                         email = email,
+#                                         salary = salary,
+#                                         joining_date = joining_date
+#                                         )
+#                 return JsonResponse({"status": "Success", "messsage": "Congratulations!"})
+#             except Exception as e:
+#                 return JsonResponse({'status': "Failed", "message": str(e)})
+#     return JsonResponse({'status': "Success", "message": "No data for get request"})
+
+# def create_student(request):
+#     student = Student()
+#     student.save()
+#     return JsonResponse("student created!")
+
+
 def create_teacher_info(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        age = request.POST.get('age')
-        email = request.POST.get('email')
-        salary = request.POST.get('salary')
-        joining_date = request.POST.get('joining_date')
+        required_fields = ['name', 'age', 'email', 'salary', 'joining_date']
+        data = {field: request.POST.get(field) for field in required_fields}
 
-        if all(name, age, email, salary, joining_date):
+        if all(data.values()):
             try:
-                Teacher.objects.create(name = name,
-                                        age = age,
-                                        email = email,
-                                        salary = salary,
-                                        joining_date = joining_date
-                                        )
-                return JsonResponse({"status": "Success", "messsage": "Congratulations!"})
+                Teacher.objects.create(**data)
+                return JsonResponse({"status": "Success", "message": "Teacher created successfully!"})
             except Exception as e:
                 return JsonResponse({'status': "Failed", "message": str(e)})
-    return JsonResponse({'status': "Success", "message": "No data for get request"})
+        return JsonResponse({'status': "Failed", "message": "All fields are required"})
+    return JsonResponse({'status': "Failed", "message": "Invalid request method"})
 
 def create_student(request):
-    student = Student()
-    student.save()
-    return JsonResponse("student created!")
+    if request.method == 'POST':
+        try:
+            student = Student()
+            student.save()
+            return JsonResponse({"status": "Success", "message": "Student created successfully!"})
+        except Exception as e:
+            return JsonResponse({'status': "Failed", "message": str(e)})
+    return JsonResponse({'status': "Failed", "message": "Invalid request method"})
 
 
 def new_m(request):
@@ -61,21 +86,125 @@ def model_filter():
     return list(teachers)
 
 
+# class InfoAPIView(APIView):
+#     def get(self, request, pk=None):
+#         if pk == 'all':
+#             teachers = Teacher.objects.annotate(average_students=Avg('classnsection__total_student'))
+#             serializer = InfoSerializer(teachers, many=True)
+#             return Response(serializer.data)
+        
+#         try:
+#             teacher = Teacher.objects.prefetch_related('classnsection_set').get(pk=pk)
+#         except Teacher.DoesNotExist:
+#             return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
+
+#         serializer = InfoSerializer(teacher)
+#         return Response(serializer.data)
+
+
+# class TeacherAPIView(APIView):
+#     def get(self, request, pk):
+#         if pk == 'all':
+#             teachers = Teacher.objects.all()
+#             serializer = TeacherSerializer(teachers, many=True)
+#             return Response(serializer.data)
+#         try:
+#             teacher = Teacher.objects.get(pk=pk)
+#         except Teacher.DoesNotExist:
+#             return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)  
+#         serializer = TeacherSerializer(teacher, many=False)
+#         return Response(serializer.data)
+
+#     def post(self, request, pk):
+#         serializer = TeacherSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+#     def put(self, request, pk):
+#         try:
+#             teacher = Teacher.objects.get(pk=pk)
+#         except Teacher.DoesNotExist:
+#             return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+#         serializer = TeacherSerializer(teacher, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     def patch(self, request, pk):
+#         try:
+#             teacher = Teacher.objects.get(pk=pk)
+#         except Teacher.DoesNotExist:
+#             return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+#         serializer = TeacherSerializer(teacher, data=request.data, partial=True)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     def delete(self, request, pk):
+#         try:
+#             teacher = Teacher.objects.get(pk=pk)
+#         except Teacher.DoesNotExist:
+#             return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+#         teacher.delete()
+#         return Response({'message': 'Teacher deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+
+# class ClassNSectionAPIView(APIView):
+#     def get(self, request):
+#         sections = ClassNSection.objects.all()
+#         serializer = ClassNSectionSerializer(sections, many=True)
+#         return Response(serializer.data)
+
+#     def post(self, request):
+#         serializer = ClassNSectionSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class StudentAPIView(APIView):
+    def get(self, request):
+        students = Student.objects.all()
+        serializer = StudentSerializer(students, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = StudentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class SubjectsAPIView(APIView):
+#     def get(self, request):
+#         subjects = Subjects.objects.all()
+#         serializer = SubjectsSerializer(subjects, many=True)
+#         return Response(serializer.data)
+
+#     def post(self, request):
+#         serializer = SubjectsSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class InfoAPIView(APIView):
     def get(self, request, pk=None):
         if pk == 'all':
             teachers = Teacher.objects.annotate(average_students=Avg('classnsection__total_student'))
             serializer = InfoSerializer(teachers, many=True)
             return Response(serializer.data)
-        
-        try:
-            teacher = Teacher.objects.prefetch_related('classnsection_set').get(pk=pk)
-        except Teacher.DoesNotExist:
-            return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
 
+        teacher = get_object_or_404(Teacher.objects.prefetch_related('classnsection_set'), pk=pk)
         serializer = InfoSerializer(teacher)
         return Response(serializer.data)
-
 
 class TeacherAPIView(APIView):
     def get(self, request, pk):
@@ -83,26 +212,20 @@ class TeacherAPIView(APIView):
             teachers = Teacher.objects.all()
             serializer = TeacherSerializer(teachers, many=True)
             return Response(serializer.data)
-        try:
-            teacher = Teacher.objects.get(pk=pk)
-        except Teacher.DoesNotExist:
-            return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)  
-        serializer = TeacherSerializer(teacher, many=False)
+
+        teacher = get_object_or_404(Teacher, pk=pk)
+        serializer = TeacherSerializer(teacher)
         return Response(serializer.data)
 
-    def post(self, request, pk):
+    def post(self, request,pk):
         serializer = TeacherSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def put(self, request, pk):
-        try:
-            teacher = Teacher.objects.get(pk=pk)
-        except Teacher.DoesNotExist:
-            return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
-        
+        teacher = get_object_or_404(Teacher, pk=pk)
         serializer = TeacherSerializer(teacher, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -110,11 +233,7 @@ class TeacherAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, pk):
-        try:
-            teacher = Teacher.objects.get(pk=pk)
-        except Teacher.DoesNotExist:
-            return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
-        
+        teacher = get_object_or_404(Teacher, pk=pk)
         serializer = TeacherSerializer(teacher, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -122,11 +241,7 @@ class TeacherAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
-        try:
-            teacher = Teacher.objects.get(pk=pk)
-        except Teacher.DoesNotExist:
-            return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
-        
+        teacher = get_object_or_404(Teacher, pk=pk)
         teacher.delete()
         return Response({'message': 'Teacher deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
@@ -143,18 +258,26 @@ class ClassNSectionAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class StudentAPIView(APIView):
-    def get(self, request):
-        students = Student.objects.all()
-        serializer = StudentSerializer(students, many=True)
-        return Response(serializer.data)
+# class StudentAPIView(APIView):
+#     def get(self, request, pk=None):
+#         if pk: 
+#             try:
+#                 student = Student.objects.get(pk=pk)
+#                 serializer = StudentSerializer(student)
+#                 return Response(serializer.data)
+#             except Student.DoesNotExist:
+#                 return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
+#         else:  
+#             students = Student.objects.all()
+#             serializer = StudentSerializer(students, many=True)
+#             return Response(serializer.data)
 
-    def post(self, request):
-        serializer = StudentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def post(self, request):
+#         serializer = StudentSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class SubjectsAPIView(APIView):
     def get(self, request):
@@ -168,5 +291,3 @@ class SubjectsAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
