@@ -13,5 +13,7 @@ urlpatterns = [
     path('info/<str:pk>', InfoAPIView.as_view(), name='info_api'),
     path('classsections/', ClassNSectionAPIView.as_view(), name='class_section_api'),
     path('students/', StudentAPIView.as_view(), name='student_api'),
+    # path('students/<str:pk>/', StudentAPIView.as_view(), name='student_detail_api'),
+
     path('subjects/', SubjectsAPIView.as_view(), name='subject_api')
 ]
