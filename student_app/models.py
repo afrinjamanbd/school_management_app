@@ -29,8 +29,8 @@ class Student(models.Model):
     name = models.CharField(max_length=100)
     teachers = models.ManyToManyField(Teacher)
     address =  models.CharField(max_length=200, default='Dhaka')
-    fees = models.FloatField(null=False, blank=False, default=3000.0)
-    standard = models.ForeignKey(ClassNSection, on_delete=models.CASCADE, default='')
+    fees = models.FloatField(null=True, blank=True, default=3000.0)
+    standard = models.ForeignKey(ClassNSection, on_delete=models.CASCADE, default='') 
 
     def __str__(self):
         return self.name

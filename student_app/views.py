@@ -273,10 +273,15 @@ class StudentAPIView(APIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 class SubjectsAPIView(APIView):
-    def get(self, request):
-        subjects = Subjects.objects.all()
-        serializer = SubjectsSerializer(subjects, many=True)
-        return Response(serializer.data)
+    def get(self, request, pk):
+        if pk == 'all':
+            subjects = Subjects.objects.all()
+            serializer = SubjectsSerializer(subjects, many=True)
+            return Response(serializer.data)
+        try:
+            subjects = Subjects.objects.get(pk=pk)
+        except Subjects.DoesNotExist:
+            return Response({'errors':'Subjects not found'}, status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request, pk):
         try: 
