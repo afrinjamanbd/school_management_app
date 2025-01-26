@@ -54,3 +54,86 @@ class TeacherAPITestCase(TestCase):
                                                          }
                             }]
         self.assertEqual(response, expected_response)
+
+class ClassNSectionAPITestCase(TestCase):
+    def setUp(self):
+        # Create a Teacher instance
+        self.client = Client()
+        self.teacher_data = {
+            'name': 'John Doe',
+            'age': 35,
+            'salary': 25000,
+            'email': 'johndoe@example.com',
+            'joining_date': '2023-01-01',
+            'educational_background': {'degree': 'MSc', 'field': 'Mathematics'}
+        }
+        self.teacher = Teacher.objects.create(**self.teacher_data)
+
+        self.class_n_section = ClassNSection.objects.create(
+            standard=5,
+            guide_teacher=self.teacher,
+            total_student=30,
+            room_name="Room 101",
+            section="A",
+            is_active=True
+        )
+
+    def test_class_n_section_create(self):
+        response = self.client.get(reverse('class_section_api', kwargs={'pk': 'all'}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        self.assertEqual(self.class_n_section.standard, 5)
+        self.assertEqual(self.class_n_section.guide_teacher, self.teacher)
+        self.assertEqual(self.class_n_section.total_student, 30)
+
+class StudentAPITestCase(TestCase):
+        def setUp(self):
+            self.client = Client()
+            # Create a Teacher instance
+            self.teacher_data = {
+                'name': 'John Doe',
+                'age': 35,
+                'salary': 25000,
+                'email': 'johndoe@example.com',
+                'joining_date': '2023-01-01',
+                'educational_background': {'degree': 'MSc', 'field': 'Mathematics'}
+            }
+            self.teacher = Teacher.objects.create(**self.teacher_data)
+
+            self.class_n_section = ClassNSection.objects.create(
+                standard=5,
+                guide_teacher=self.teacher,
+                total_student=30,
+                room_name="Room 101",
+                section="A",
+                is_active=True
+            )
+
+            self.student = Student.objects.create(
+                name='samiul',
+                address='Dhaka',
+                fees=3000.0,
+                standard=self.class_n_section
+            )
+            self.student.teachers.add(self.teacher)
+
+        def test_all_student(self):
+        #     response = self.client.get(reverse('student_api', kwargs={'pk': 'all'}))
+        #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(self.student.name, 'samiul')
+            self.assertEqual(self.student.address, 'Dhaka')
+            self.assertEqual(self.student.standard.room_name, 'Room 101')
+
+class SubjectAPITestCase(TestCase):
+    def setUp(self):
+            self.client = Client()
+
+            self.subject = Subjects.objects.create(
+                name='Mathematics',
+            )
+
+    def test_subject(self):
+        response = self.client.get(reverse('subject_api', kwargs={'pk': 'all'}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(self.subject.name, 'Mathematics')
